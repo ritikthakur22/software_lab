@@ -1,86 +1,89 @@
-# Guptrix Secure Notes (formerly Model3)
+# Guptrix Secure Notes
 
 A lightweight, zero-knowledge, end-to-end encrypted notes application featuring a sleek, modern UI. Built with a Python/Flask backend and a premium glassmorphic frontend.
 
 ## Features
-- **Advanced UI**: Premium dark mode, animated gradient backgrounds, glassmorphic panels, and neon glow accents.
+- **Modern Glassmorphic UI**: Premium dark mode, animated gradient backgrounds, glassmorphic panels, and neon glow accents.
 - **Secure Architecture**: SQLite-backed services for user registration, session management, and encrypted notes.
 - **Note Management**: Create, edit, delete, and categorize notes securely.
 - **API-First**: Frontend communicates entirely via minimal REST APIs (`/api/*`).
+- **Comprehensive Testing**: Full test suite covering unit tests, integration workflows, and system end-to-end flows using PyTest.
 
 ## Project Structure
 
-- `user.py`: user registration, login, and profile updates
-- `session.py`: session creation, validation, and termination
-- `note.py`: note CRUD and search
-- `category.py`: category creation and note-category mapping
-- `backup.py`: export/import notes as JSON
-- `encryptionService.py`: reversible string encryption helper
+- `user.py`: User registration, login, and profile updates
+- `session.py`: Session creation, validation, and termination
+- `note.py`: Note CRUD operations and keyword search
+- `category.py`: Category creation and note-category mapping
+- `backup.py`: Export and import notes as JSON
+- `encryptionService.py`: Reversible string encryption helper
 - `database.py`: SQLite schema and connection helpers
-- `app.py`: Flask application serving APIs
-- `www/`: Advanced glassmorphic frontend static files (HTML, CSS, JS)
-- `tests/`: unit, integration, and system tests
-- `.github/workflows/python-tests.yml`: CI test workflow
+- `app.py`: Flask application serving REST APIs and static assets
+- `www/`: Modern glassmorphic frontend static files (HTML, CSS, JS)
+- `tests/`: Unit, integration, and system tests
 
 ## Requirements
 
-- Python 3.12+ (3.14 works in your current setup)
-- pytest
-- Flask
+- Python 3.10+
+- Flask >= 2.0
+- pytest >= 7.0
 - gunicorn (for production)
 
 ## Local Setup & Development
 
-From project root:
+1. Navigate to the application directory:
+   ```bash
+   cd gupt_site
+   ```
 
-```bash
-/home/crdy/testing/SE_lab/Model3/guptrix/bin/python -m pip install -r requirements.txt
-/home/crdy/testing/SE_lab/Model3/guptrix/bin/python app.py
-```
+2. Create and activate a virtual environment:
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate   # On Windows: venv\Scripts\activate
+   ```
 
-Then open your browser at http://localhost:8000.
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. Run the development server:
+   ```bash
+   python3 app.py
+   ```
+
+5. Open your browser at `http://localhost:8000`.
 
 ## Production Hosting
 
-To host Guptrix in a production environment, you should use a production WSGI server like `gunicorn` rather than the built-in Flask development server.
+To host Guptrix in a production environment using Gunicorn:
 
-### 1. Install Production Dependencies
 ```bash
-/home/crdy/testing/SE_lab/Model3/guptrix/bin/python -m pip install gunicorn
+gunicorn -w 4 -b 0.0.0.0:8000 app:app
 ```
 
-### 2. Run with Gunicorn
-Start the server binding to `0.0.0.0` (all network interfaces) on your desired port (e.g., 8000) with 4 worker processes:
+## Running the Test Suite
+
+Make sure your virtual environment is active and run tests from the `gupt_site/` directory:
+
+### Unit Tests
 ```bash
-/home/crdy/testing/SE_lab/Model3/guptrix/bin/gunicorn -w 4 -b 0.0.0.0:8000 app:app
+python3 -m pytest -q tests/test_*_unit.py
 ```
 
-*Note: For public internet access, it's recommended to place a reverse proxy like Nginx in front of Gunicorn to handle SSL/TLS termination.*
-
-## Run Tests
-
-### Unit tests
-
+### Integration Tests
 ```bash
-/home/crdy/testing/SE_lab/Model3/guptrix/bin/python -m pytest -q tests/test_*_unit.py
+python3 -m pytest -q tests/test_integration_flow.py
 ```
 
-### Integration test
-
+### System Tests
 ```bash
-/home/crdy/testing/SE_lab/Model3/guptrix/bin/python -m pytest -q tests/test_integration_flow.py
+python3 -m pytest -q tests/test_system_flow.py
 ```
 
-### System test
-
+### Full Test Suite
 ```bash
-/home/crdy/testing/SE_lab/Model3/guptrix/bin/python -m pytest -q tests/test_system_flow.py
-```
-
-### Full suite
-
-```bash
-/home/crdy/testing/SE_lab/Model3/guptrix/bin/python -m pytest -q tests/test_*_unit.py tests/test_integration_flow.py tests/test_system_flow.py
+python3 -m pytest -q tests/test_*_unit.py tests/test_integration_flow.py tests/test_system_flow.py
 ```
 
 ## Architecture Diagram
@@ -112,13 +115,3 @@ flowchart TD
 	T --> B
 	T --> E
 ```
-
-This project follows a service-style design where each module encapsulates one responsibility and persists to the shared SQLite schema in `database.py`.
-
-## Troubleshooting
-
-### 1) ModuleNotFoundError: No module named 'backup'
-Run tests through pytest from project root.
-
-### 2) Foreign key or data conflicts during manual runs
-Use temporary DB fixtures for tests (already configured), or delete/reset your manual DB file before rerunning flows.
